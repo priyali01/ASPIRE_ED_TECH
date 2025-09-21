@@ -4,6 +4,7 @@ import { useState } from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { FileQuestion } from "lucide-react"
 import { Home, Brain, GraduationCap, Users, Trophy, Settings, LogOut, ChevronLeft, ChevronRight } from "lucide-react"
 
 interface SidebarProps {
@@ -17,6 +18,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
   const navigationItems = [
     { id: "dashboard", name: "Dashboard", icon: Home, href: "/dashboard" },
     { id: "career-explorer", name: "Career Explorer", icon: Brain, href: "/career-explorer" },
+    { id: "quiz", name: "Career Quiz", icon: FileQuestion, href: "/quiz" },
     { id: "colleges", name: "College Directory", icon: GraduationCap, href: "/colleges" },
     { id: "mentorship", name: "Mentorship & Experts", icon: Users, href: "/mentorship" },
     { id: "scholarships", name: "Scholarships & Exams", icon: Trophy, href: "/scholarships" },

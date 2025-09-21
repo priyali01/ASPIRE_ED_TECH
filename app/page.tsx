@@ -5,6 +5,7 @@ import { CardStack } from "@/components/advanced-animations/card-stack"
 import { StatisticsCounter } from "@/components/advanced-animations/statistics-counter"
 import { PremiumTestimonials } from "@/components/premium-testimonials"
 import { Footer } from "@/components/footer"
+import { QuizSection } from "@/components/quiz-section"
 
 export default function HomePage() {
   return (
@@ -13,6 +14,7 @@ export default function HomePage() {
       <HeroSection />
       <CardStack />
       <StatisticsCounter />
+      <QuizSection />
       <PremiumTestimonials />
       <FeaturesSection />
       <Footer />

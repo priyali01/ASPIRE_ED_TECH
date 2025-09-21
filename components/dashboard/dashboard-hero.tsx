@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { ArrowRight, BookOpen, Users } from "lucide-react"
+import { ArrowRight, BookOpen, Users, Brain } from "lucide-react"
 
 interface DashboardHeroProps {
   userName: string
@@ -13,8 +13,8 @@ interface DashboardHeroProps {
 export function DashboardHero({ userName, hasCompletedAptitude }: DashboardHeroProps) {
   return (
     <Card className="glass-card p-8 mb-8">
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between">
-        <div className="mb-6 lg:mb-0">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between min-w-0">
+        <div className="mb-6 lg:mb-0 min-w-0">
           {hasCompletedAptitude ? (
             <>
               <h1 className="text-3xl font-bold text-foreground mb-2">
@@ -36,14 +36,30 @@ export function DashboardHero({ userName, hasCompletedAptitude }: DashboardHeroP
           )}
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 items-center">
           {hasCompletedAptitude ? (
             <>
-              <Button className="gradient-cta text-white hover:opacity-90 group">
+              <Button className="gradient-cta text-white hover:opacity-90 group w-full sm:w-auto whitespace-nowrap">
                 View Your Career Report
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button variant="outline" className="border-primary/20 hover:border-primary bg-transparent" asChild>
+
+              <Button
+                variant="outline"
+                className="border-primary/20 hover:border-primary bg-transparent w-full sm:w-auto whitespace-nowrap"
+                asChild
+              >
+                <Link href="/quiz">
+                  <Brain className="mr-2 h-4 w-4" />
+                  Take Career Quiz
+                </Link>
+              </Button>
+
+              <Button
+                variant="outline"
+                className="border-primary/20 hover:border-primary bg-transparent w-full sm:w-auto whitespace-nowrap"
+                asChild
+              >
                 <Link href="/colleges">
                   <BookOpen className="mr-2 h-4 w-4" />
                   Explore Recommended Colleges
@@ -52,11 +68,22 @@ export function DashboardHero({ userName, hasCompletedAptitude }: DashboardHeroP
             </>
           ) : (
             <>
-              <Button className="gradient-cta text-white hover:opacity-90 group">
-                Take the Aptitude Test
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              <Button
+                className="gradient-cta text-white hover:opacity-90 group w-full sm:w-auto whitespace-nowrap"
+                asChild
+              >
+                <Link href="/quiz">
+                  <Brain className="mr-2 h-4 w-4" />
+                  Take Career Quiz
+                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
               </Button>
-              <Button variant="outline" className="border-primary/20 hover:border-primary bg-transparent" asChild>
+
+              <Button
+                variant="outline"
+                className="border-primary/20 hover:border-primary bg-transparent w-full sm:w-auto whitespace-nowrap"
+                asChild
+              >
                 <Link href="/colleges">
                   <Users className="mr-2 h-4 w-4" />
                   Explore Colleges Near Me
