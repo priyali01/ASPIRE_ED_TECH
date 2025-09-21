@@ -95,7 +95,12 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
                     <item.icon className={` ${isCollapsed ? "h-4 w-4" : "h-5 w-5"} ${isActive && !isCollapsed ? "text-primary" : ""}`} />
                   </div>
 
-                  {!isCollapsed && <span className="font-medium">{item.name}</span>}
+                  {/* keep label small even when expanded */}
+                  {!isCollapsed && (
+                    <span className="font-medium text-sm">
+                      {item.name}
+                    </span>
+                  )}
                 </Link>
               )
             })}
@@ -122,7 +127,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
                   <div className={isCollapsed ? "flex items-center justify-center h-8 w-8 rounded-full group-hover:bg-primary/5" : "flex-shrink-0"}>
                     <item.icon className={`${isCollapsed ? "h-4 w-4" : "h-5 w-5"}`} />
                   </div>
-                  {!isCollapsed && <span className="font-medium">{item.name}</span>}
+                  {!isCollapsed && <span className="font-medium text-sm">{item.name}</span>}
                 </Link>
               )
             })}
