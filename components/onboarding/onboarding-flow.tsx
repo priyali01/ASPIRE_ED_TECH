@@ -24,6 +24,7 @@ import {
 export function OnboardingFlow() {
   const [currentStep, setCurrentStep] = useState(0)
   const [formData, setFormData] = useState({
+    role: "", // new: student | parent | mentor | counsellor
     personalInfo: {
       fullName: "",
       dateOfBirth: "",
@@ -31,11 +32,12 @@ export function OnboardingFlow() {
       state: "",
       currentClass: "",
     },
-    interests: [],
+    interests: [] as string[],
     aptitudeAnswer: "",
   })
 
   const steps = [
+    { title: "Who are you?", description: "Are you a Student, Parent, Mentor or Counsellor?" }, // new first step
     { title: "Personal Information", description: "Tell us about yourself" },
     { title: "Your Interests", description: "What excites you?" },
     { title: "Quick Assessment", description: "One simple question" },
@@ -55,13 +57,13 @@ export function OnboardingFlow() {
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1)
+      setCurrentStep((s) => s + 1)
     }
   }
 
   const handlePrevious = () => {
     if (currentStep > 0) {
-      setCurrentStep(currentStep - 1)
+      setCurrentStep((s) => s - 1)
     }
   }
 
@@ -74,9 +76,53 @@ export function OnboardingFlow() {
     }))
   }
 
+  const roleOptions = [
+    { id: "student", label: "Student", icon: User },
+    { id: "parent", label: "Parent / Guardian", icon: User },
+    { id: "mentor", label: "Mentor", icon: Briefcase },
+    { id: "counsellor", label: "Counsellor", icon: GraduationCap },
+  ]
+
   const renderStep = () => {
     switch (currentStep) {
+      // New role selection step (index 0)
       case 0:
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-foreground mb-2">Who are you?</h2>
+              <p className="text-muted-foreground">This helps us tailor the onboarding experience.</p>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {roleOptions.map((role) => {
+                const Icon = role.icon
+                const selected = formData.role === role.id
+                return (
+                  <Card
+                    key={role.id}
+                    className={`p-4 cursor-pointer transition-all duration-200 text-center ${
+                      selected ? "ring-2 ring-primary bg-primary/10" : "hover:bg-muted/50"
+                    }`}
+                    onClick={() => setFormData((prev) => ({ ...prev, role: role.id }))}
+                  >
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent p-3 mb-3 mx-auto flex items-center justify-center`}>
+                      <Icon className="h-6 w-6 text-white" />
+                    </div>
+                    <div className="font-medium text-sm">{role.label}</div>
+                  </Card>
+                )
+              })}
+            </div>
+
+            <div className="text-center text-sm text-muted-foreground">
+              Selected: {formData.role || "None"}
+            </div>
+          </div>
+        )
+
+      // Personal Info (previously case 0)
+      case 1:
         return (
           <div className="space-y-6">
             <div className="text-center mb-8">
@@ -174,7 +220,8 @@ export function OnboardingFlow() {
           </div>
         )
 
-      case 1:
+      // Interests (previously case 1)
+      case 2:
         return (
           <div className="space-y-6">
             <div className="text-center mb-8">
@@ -210,7 +257,8 @@ export function OnboardingFlow() {
           </div>
         )
 
-      case 2:
+      // Quick Assessment (previously case 2)
+      case 3:
         return (
           <div className="space-y-6">
             <div className="text-center mb-8">
@@ -253,7 +301,8 @@ export function OnboardingFlow() {
           </div>
         )
 
-      case 3:
+      // AI Processing (previously case 3)
+      case 4:
         return (
           <div className="space-y-6">
             <div className="text-center">
@@ -322,9 +371,11 @@ export function OnboardingFlow() {
             <Button
               onClick={handleNext}
               disabled={
-                (currentStep === 0 && !formData.personalInfo.fullName) ||
-                (currentStep === 1 && formData.interests.length < 2) ||
-                (currentStep === 2 && !formData.aptitudeAnswer)
+                // Validate new first step (role) and keep existing validations shifted by one
+                (currentStep === 0 && !formData.role) ||
+                (currentStep === 1 && !formData.personalInfo.fullName) ||
+                (currentStep === 2 && formData.interests.length < 2) ||
+                (currentStep === 3 && !formData.aptitudeAnswer)
               }
               className="gradient-cta text-white hover:opacity-90 flex items-center space-x-2"
             >
