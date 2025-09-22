@@ -11,30 +11,64 @@ import { useRouter } from "next/navigation"
 export function AIMentorFAB() {
   const [isOpen, setIsOpen] = useState(false)
   const [message, setMessage] = useState("")
+  const [chat, setChat] = useState<{ role: "user" | "assistant"; content: string }[]>([])
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
 
   const sampleQuestions = [
-    { 
-      text: "What career suits my interests?",
-      link: "/career-guidance"
-    },
-    {
-      text: "Which colleges should I consider?",
-      link: "/college-finder"
-    },
-    {
-      text: "How to prepare for JEE?",
-      link: "/exam-prep/jee"
-    },
-    {
-      text: "Tell me about scholarships",
-      link: "/scholarships"
-    },
+    { text: "What career suits my interests?", link: "/career-guidance" },
+    { text: "Which colleges should I consider?", link: "/college-finder" },
+    { text: "How to prepare for JEE?", link: "/exam-prep/jee" },
+    { text: "Tell me about scholarships", link: "/scholarships" },
   ]
 
   const handleQuestionClick = (link: string) => {
     router.push(link)
     setIsOpen(false)
+  }
+
+  const handleSendMessage = async () => {
+    if (!message.trim()) return
+    const userMessage = message
+    setMessage("")
+    setChat((prev) => [...prev, { role: "user", content: userMessage }])
+    setLoading(true)
+
+    try {
+      // ⚠️ Only for demo: key is exposed in client!
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyA66bj6PAp110ru-kJa7G7oSBUrGVojJyw`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                role: "user",
+                parts: [{ text: userMessage }],
+              },
+            ],
+          }),
+        }
+      )
+
+      const data = await res.json()
+      const reply =
+        data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+        "Sorry, I couldn’t answer that."
+
+      setChat((prev) => [...prev, { role: "assistant", content: reply }])
+    } catch (err) {
+      console.error(err)
+      setChat((prev) => [
+        ...prev,
+        { role: "assistant", content: "⚠️ Error: Couldn’t connect to AI." },
+      ])
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -74,7 +108,7 @@ export function AIMentorFAB() {
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-border/20">
                   <div className="flex items-center space-x-2">
-                    <motion.div 
+                    <motion.div
                       animate={{ rotate: [0, 10, -10, 0] }}
                       transition={{ repeat: Infinity, duration: 3 }}
                       className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center"
@@ -92,34 +126,20 @@ export function AIMentorFAB() {
                 </div>
 
                 {/* Chat Content */}
-                <div className="flex-1 p-4 overflow-y-auto">
-                  <div className="space-y-4">
-                    <motion.div 
-                      initial={{ x: -20, opacity: 0 }}
-                      animate={{ x: 0, opacity: 1 }}
-                      className="bg-primary/10 rounded-lg p-3"
+                <div className="flex-1 p-4 overflow-y-auto space-y-3">
+                  {chat.map((msg, i) => (
+                    <div
+                      key={i}
+                      className={`p-2 rounded-lg text-sm max-w-[80%] ${
+                        msg.role === "user"
+                          ? "bg-blue-500 text-white ml-auto"
+                          : "bg-muted/70 text-foreground mr-auto"
+                      }`}
                     >
-                      <p className="text-sm text-foreground">
-                        Hi! I'm your AI mentor. I can help you with career guidance, college selection, scholarships, and
-                        more. What would you like to know?
-                      </p>
-                    </motion.div>
-
-                    <div className="space-y-2">
-                      <p className="text-xs text-muted-foreground font-medium">Quick questions:</p>
-                      {sampleQuestions.map((question, index) => (
-                        <motion.button
-                          key={index}
-                          whileHover={{ x: 5 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() => handleQuestionClick(question.link)}
-                          className="block w-full text-left text-xs bg-muted/50 hover:bg-muted rounded-lg p-2 transition-colors"
-                        >
-                          {question.text}
-                        </motion.button>
-                      ))}
+                      {msg.content}
                     </div>
-                  </div>
+                  ))}
+                  {loading && <p className="text-xs text-muted-foreground">AI is typing...</p>}
                 </div>
 
                 {/* Input */}
@@ -129,15 +149,12 @@ export function AIMentorFAB() {
                       placeholder="Ask me anything..."
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
-                      onKeyPress={(e) => {
-                        if (e.key === "Enter") {
-                          // Handle send message
-                          setMessage("")
-                        }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") handleSendMessage()
                       }}
                     />
                     <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                      <Button size="icon" className="gradient-cta text-white">
+                      <Button onClick={handleSendMessage} size="icon" className="gradient-cta text-white">
                         <Send className="h-4 w-4" />
                       </Button>
                     </motion.div>
