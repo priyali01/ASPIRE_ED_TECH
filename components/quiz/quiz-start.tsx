@@ -18,7 +18,7 @@ export function QuizStart({ onStart }: QuizStartProps) {
           </div>
           <h1 className="text-4xl font-bold text-foreground mb-4">Test Your College Knowledge!</h1>
           <p className="text-muted-foreground text-lg mb-6">
-            Answer 5 questions about top colleges in India and discover your ideal career path
+            Answer 10 questions about top colleges in India and discover your ideal career path
           </p>
         </div>
 

@@ -375,7 +375,7 @@ export default function SoftwareEngineeringPage() {
                           <TableCell>{c.name}</TableCell>
                           <TableCell className="uppercase">{c.type}</TableCell>
                           <TableCell>{c.city}</TableCell>
-                          <TableCell>₹{c.fee.toLocaleString()}</TableCell>
+                          <TableCell>₹{c.fee.toLocaleString("en-IN")}</TableCell>
                           <TableCell>{c.avgPackage}</TableCell>
                         </TableRow>
                       ))}
@@ -466,17 +466,20 @@ export default function SoftwareEngineeringPage() {
                 <div className="grid md:grid-cols-3 gap-4">
                   {[1, 2, 3].map((i) => (
                     <Card key={i} className="border-muted/60">
-                      <CardHeader>
-                        <CardTitle className="text-base">Alumni Story #{i}</CardTitle>
-                        <CardDescription>From student to engineer: breakthroughs, challenges, and tips.</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="flex items-center justify-between">
-                          <Button variant="secondary" size="sm">Read story</Button>
-                          <Button size="sm">Request mentorship</Button>
-                        </div>
-                      </CardContent>
-                    </Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">Alumni Story #{i}</CardTitle>
+                      <CardDescription>
+                        From student to engineer: breakthroughs, challenges, and tips.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex flex-col items-start gap-2">
+                        <Button variant="secondary" size="sm">Read story</Button>
+                        <Button size="sm">Request mentorship</Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
                   ))}
                 </div>
               </CardContent>
