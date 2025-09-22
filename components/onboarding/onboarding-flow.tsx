@@ -24,23 +24,28 @@ import {
 export function OnboardingFlow() {
   const [currentStep, setCurrentStep] = useState(0)
   const [formData, setFormData] = useState({
-    role: "", // new: student | parent | mentor | counsellor
+    role: "", // student | parent | mentor | counsellor
     personalInfo: {
       fullName: "",
       dateOfBirth: "",
       city: "",
       state: "",
       currentClass: "",
+      marks10: "", // Class 10th marks (%)
+      marks12: "", // Class 12th marks (%)
+      profilePic: "", // data URL
+      bio: "",
     },
     interests: [] as string[],
     aptitudeAnswer: "",
   })
 
   const steps = [
-    { title: "Who are you?", description: "Are you a Student, Parent, Mentor or Counsellor?" }, // new first step
+    { title: "Who are you?", description: "Are you a Student, Parent, Mentor or Counsellor?" },
     { title: "Personal Information", description: "Tell us about yourself" },
     { title: "Your Interests", description: "What excites you?" },
     { title: "Quick Assessment", description: "One simple question" },
+    { title: "Profile", description: "Upload photo and write a short bio" }, // new step
     { title: "AI Processing", description: "Creating your profile" },
   ]
 
@@ -83,9 +88,20 @@ export function OnboardingFlow() {
     { id: "counsellor", label: "Counsellor", icon: GraduationCap },
   ]
 
+  const handleProfilePicChange = (file?: File) => {
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      setFormData((prev) => ({
+        ...prev,
+        personalInfo: { ...prev.personalInfo, profilePic: (e.target?.result as string) || "" },
+      }))
+    }
+    reader.readAsDataURL(file)
+  }
+
   const renderStep = () => {
     switch (currentStep) {
-      // New role selection step (index 0)
       case 0:
         return (
           <div className="space-y-6">
@@ -121,7 +137,6 @@ export function OnboardingFlow() {
           </div>
         )
 
-      // Personal Info (previously case 0)
       case 1:
         return (
           <div className="space-y-6">
@@ -216,11 +231,53 @@ export function OnboardingFlow() {
                   />
                 </div>
               </div>
+
+              {/* Marks inputs: show 10th/12th marks based on selected class */}
+              <div className="grid grid-cols-2 gap-4 mt-2">
+                {(["10th", "11th", "12th", "graduate"].includes(formData.personalInfo.currentClass)) && (
+                  <div className="space-y-2">
+                    <Label htmlFor="marks10">Class 10th Marks (%)</Label>
+                    <Input
+                      id="marks10"
+                      type="number"
+                      min={0}
+                      max={100}
+                      placeholder="e.g. 78"
+                      value={formData.personalInfo.marks10}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          personalInfo: { ...prev.personalInfo, marks10: e.target.value },
+                        }))
+                      }
+                    />
+                  </div>
+                )}
+
+                {(["12th", "graduate"].includes(formData.personalInfo.currentClass)) && (
+                  <div className="space-y-2">
+                    <Label htmlFor="marks12">Class 12th Marks (%)</Label>
+                    <Input
+                      id="marks12"
+                      type="number"
+                      min={0}
+                      max={100}
+                      placeholder="e.g. 82"
+                      value={formData.personalInfo.marks12}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          personalInfo: { ...prev.personalInfo, marks12: e.target.value },
+                        }))
+                      }
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )
 
-      // Interests (previously case 1)
       case 2:
         return (
           <div className="space-y-6">
@@ -257,7 +314,6 @@ export function OnboardingFlow() {
           </div>
         )
 
-      // Quick Assessment (previously case 2)
       case 3:
         return (
           <div className="space-y-6">
@@ -301,8 +357,63 @@ export function OnboardingFlow() {
           </div>
         )
 
-      // AI Processing (previously case 3)
+      // New Profile step: upload photo + bio
       case 4:
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-foreground mb-2">Profile</h2>
+              <p className="text-muted-foreground">Upload a profile photo and write a short bio</p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4">
+              <div className="flex items-center space-x-4">
+                <div className="w-24 h-24 rounded-full overflow-hidden bg-muted flex items-center justify-center">
+                  {formData.personalInfo.profilePic ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={formData.personalInfo.profilePic} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="text-sm text-muted-foreground">No photo</div>
+                  )}
+                </div>
+
+                <div>
+                  <Label>Upload Photo</Label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      handleProfilePicChange(file)
+                    }}
+                    className="mt-2"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="bio">Short Bio</Label>
+                <textarea
+                  id="bio"
+                  rows={4}
+                  className="w-full px-3 py-2 border border-border rounded-md bg-background"
+                  placeholder="Tell us a bit about yourself (studies, goals, interests)..."
+                  value={formData.personalInfo.bio}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      personalInfo: { ...prev.personalInfo, bio: e.target.value },
+                    }))
+                  }
+                />
+                <div className="text-sm text-muted-foreground">Keep it concise — 50-200 characters recommended.</div>
+              </div>
+            </div>
+          </div>
+        )
+
+      // AI Processing (moved to last index)
+      case 5:
         return (
           <div className="space-y-6">
             <div className="text-center">
@@ -371,11 +482,18 @@ export function OnboardingFlow() {
             <Button
               onClick={handleNext}
               disabled={
-                // Validate new first step (role) and keep existing validations shifted by one
                 (currentStep === 0 && !formData.role) ||
-                (currentStep === 1 && !formData.personalInfo.fullName) ||
+                // require fullName and marks where applicable
+                (currentStep === 1 &&
+                  (!formData.personalInfo.fullName ||
+                    ((["10th", "11th", "12th", "graduate"].includes(formData.personalInfo.currentClass) &&
+                      !formData.personalInfo.marks10) ||
+                      (["12th", "graduate"].includes(formData.personalInfo.currentClass) &&
+                        !formData.personalInfo.marks12)))) ||
                 (currentStep === 2 && formData.interests.length < 2) ||
-                (currentStep === 3 && !formData.aptitudeAnswer)
+                (currentStep === 3 && !formData.aptitudeAnswer) ||
+                // require profile photo AND bio (you can relax to either if preferred)
+                (currentStep === 4 && (!formData.personalInfo.profilePic || !formData.personalInfo.bio))
               }
               className="gradient-cta text-white hover:opacity-90 flex items-center space-x-2"
             >
