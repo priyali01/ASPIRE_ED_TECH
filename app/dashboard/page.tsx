@@ -13,7 +13,7 @@ export default function DashboardPage() {
 
   // Mock user data - in real app this would come from authentication
   const userData = {
-    name: "Arjun Kumar",
+    name: "Priyali Chaudhari",
     hasCompletedAptitude: true, // Change to false to see pre-aptitude state
   }
 
