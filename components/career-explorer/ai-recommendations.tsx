@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -107,7 +108,9 @@ export function AIRecommendations() {
                 </div>
               </div>
 
-              <Button className="w-full gradient-cta text-white hover:opacity-90">Explore Career Path</Button>
+              <Link href={career.title === "Software Engineer" ? "/career-explorer/software-engineering" : "/career-explorer"}>
+                <Button className="w-full gradient-cta text-white hover:opacity-90">Explore Career Path</Button>
+              </Link>
             </div>
           </Card>
         ))}
