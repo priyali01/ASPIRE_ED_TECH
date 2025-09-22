@@ -4,8 +4,37 @@ import { useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { FileQuestion } from "lucide-react"
-import { Home, Brain, GraduationCap, Users, Trophy, Settings, LogOut, ChevronLeft, ChevronRight } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
+
+export default function Loading() {
+  return (
+    <div className="p-6">
+      <Skeleton className="h-9 w-64 mb-8" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="space-y-4 p-6">
+            <Skeleton className="h-8 w-8 rounded-full" />
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-1/2" />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}import { FileQuestion } from "lucide-react"
+import { 
+    Home, 
+    Brain, 
+    GraduationCap, 
+    Users, 
+    Trophy, 
+    Settings, 
+    LogOut, 
+    ChevronLeft, 
+    ChevronRight,
+    Book // Added for Content Hub
+} from "lucide-react"
 
 interface SidebarProps {
   collapsed?: boolean
@@ -31,6 +60,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
     { id: "career-explorer", name: "Career Explorer", icon: Brain, href: "/career-explorer" },
     { id: "quiz", name: "Career Quiz", icon: FileQuestion, href: "/quiz" },
     { id: "colleges", name: "College Directory", icon: GraduationCap, href: "/colleges" },
+    { id: "content-hub", name: "Content Hub", icon: Book, href: "/content-hub" }, // Added Content Hub
     { id: "mentorship", name: "Mentorship & Experts", icon: Users, href: "/mentorship" },
     { id: "scholarships", name: "Scholarships & Exams", icon: Trophy, href: "/scholarships" },
   ]
@@ -40,9 +70,12 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
     { id: "signout", name: "Sign Out", icon: LogOut, href: "/auth" },
   ]
 
+  const widthClass = isCollapsed ? "w-16" : "w-64"
+  const textHidden = isCollapsed ? "hidden" : "block"
+
   return (
     <div
-      className={`fixed left-0 top-0 h-full glass-nav transition-[width] duration-300 ease-in-out z-40 ${isCollapsed ? "w-16" : "w-64"}`}
+      className={`fixed left-0 top-0 h-full glass-nav transition-[width] duration-300 ease-in-out z-40 ${widthClass}`}
     >
       <div className={`flex flex-col h-full ${isCollapsed ? "p-2" : "p-4"}`}>
         {/* Logo Section */}
