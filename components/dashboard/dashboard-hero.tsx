@@ -21,7 +21,9 @@ export function DashboardHero({ userName, hasCompletedAptitude }: DashboardHeroP
           {hasCompletedAptitude ? (
             <>
               <h1 className="text-3xl font-bold text-foreground mb-2">
-                Welcome back, {displayName}! Here's Your Progress.
+
+                Welcome back, {userName} ! Here's Your Progress.
+
               </h1>
               <p className="text-muted-foreground text-lg">
                 Continue building your career profile and exploring opportunities.
