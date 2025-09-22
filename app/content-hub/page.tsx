@@ -77,7 +77,6 @@ const MOCK: Item[] = [
     author: "ASPIRE Learn",
     publishedAt: "2025-05-20",
   },
-  // add more as needed
 ]
 
 export default function ContentHubPage() {
@@ -86,6 +85,8 @@ export default function ContentHubPage() {
   const [tag, setTag] = useState<string | null>(null)
   const [sort, setSort] = useState<"newest" | "popular">("newest")
   const reelsRef = useRef<HTMLDivElement | null>(null)
+  // sidebar collapsed state so page can expand when collapsed
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   const tags = useMemo(() => {
     const s = new Set<string>()
@@ -102,7 +103,6 @@ export default function ContentHubPage() {
     if (type) list = list.filter((i) => i.type === type)
     if (tag) list = list.filter((i) => i.tags.includes(tag))
     if (sort === "newest") list.sort((a, b) => +new Date(b.publishedAt || 0) - +new Date(a.publishedAt || 0))
-    // popularity not in mock; keep placeholder
     return list
   }, [query, type, tag, sort])
 
@@ -120,8 +120,10 @@ export default function ContentHubPage() {
 
   return (
     <>
-      <Sidebar />
-      <main className="p-6 ml-64 min-h-screen bg-background">
+      <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed((s) => !s)} />
+      <main
+        className={`p-6 min-h-screen transition-all duration-300 ${sidebarCollapsed ? "ml-16" : "ml-64"} bg-gradient-to-br from-background from-10% via-background/90 via-30% to-blue-50/20 to-90%`}
+      >
         <div className="max-w-6xl mx-auto">
           <div className="flex items-start justify-between gap-4 mb-6">
             <div>
