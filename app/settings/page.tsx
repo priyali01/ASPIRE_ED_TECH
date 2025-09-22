@@ -10,7 +10,7 @@ import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Bell, User, Shield, Palette, Globe, HelpCircle } from "lucide-react"
+import { Bell, User, Shield, Palette, Globe, HelpCircle, Camera } from "lucide-react"
 
 export default function SettingsPage() {
   const [notifications, setNotifications] = useState({
@@ -28,15 +28,6 @@ export default function SettingsPage() {
     bio: "Aspiring towards meaningful career choices and learning opportunities.",
     profilePic: "/images/priyali-chaudhari.jpg", // place this file in public/images/
   })
-
-  const handleProfilePhotoChange = (file?: File | null) => {
-    if (!file) return
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      setProfile((prev) => ({ ...prev, profilePic: (e.target?.result as string) || "" }))
-    }
-    reader.readAsDataURL(file)
-  }
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -85,21 +76,28 @@ export default function SettingsPage() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="flex items-center gap-6">
-                    <Avatar className="w-20 h-20">
-                      {profile.profilePic ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <AvatarImage src={profile.profilePic} alt="Profile" />
-                      ) : (
-                        <AvatarImage src="/placeholder.svg?height=80&width=80" />
-                      )}
-                      <AvatarFallback className="text-lg">PC</AvatarFallback>
-                    </Avatar>
+                    <label htmlFor="profile-photo" className="cursor-pointer">
+                      <div className="flip-card">
+                        <div className="flip-inner">
+                          <div className="flip-face flip-front">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={profile.profilePic || "/placeholder.svg?height=80&width=80"}
+                              alt="Profile"
+                              className="w-20 h-20 object-cover rounded-full"
+                            />
+                          </div>
+                          <div className="flip-face flip-back">
+                            <Camera className="w-6 h-6" />
+                          </div>
+                        </div>
+                      </div>
+                    </label>
+
                     <div>
-                      <label htmlFor="profile-photo" className="mb-2 inline-block">
-                        <Button variant="outline" className="bg-transparent">
-                          Change Photo
-                        </Button>
-                      </label>
+                      <Button variant="outline" className="mb-2 bg-transparent" onClick={() => document.getElementById("profile-photo")?.click()}>
+                        Change Photo
+                      </Button>
                       <input
                         id="profile-photo"
                         type="file"
@@ -110,6 +108,44 @@ export default function SettingsPage() {
                       <p className="text-sm text-muted-foreground">JPG, GIF or PNG. 1MB max.</p>
                     </div>
                   </div>
+                  {/* flip card styles (scoped) */}
+                  <style jsx>{`
+                    .flip-card {
+                      perspective: 900px;
+                    }
+                    .flip-inner {
+                      width: 80px;
+                      height: 80px;
+                      position: relative;
+                      transition: transform 0.6s;
+                      transform-style: preserve-3d;
+                      border-radius: 9999px;
+                    }
+                    label:hover .flip-inner {
+                      transform: rotateY(180deg);
+                    }
+                    .flip-face {
+                      position: absolute;
+                      width: 100%;
+                      height: 100%;
+                      top: 0;
+                      left: 0;
+                      backface-visibility: hidden;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      border-radius: 9999px;
+                      overflow: hidden;
+                    }
+                    .flip-front {
+                      background: var(--muted);
+                    }
+                    .flip-back {
+                      transform: rotateY(180deg);
+                      background: linear-gradient(135deg, rgba(59,130,246,0.9), rgba(99,102,241,0.9));
+                      color: white;
+                    }
+                  `}</style>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
