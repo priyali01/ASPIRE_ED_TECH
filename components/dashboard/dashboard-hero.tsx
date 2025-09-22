@@ -6,11 +6,14 @@ import { Card } from "@/components/ui/card"
 import { ArrowRight, BookOpen, Users, Brain } from "lucide-react"
 
 interface DashboardHeroProps {
-  userName: string
+  userName?: string
   hasCompletedAptitude: boolean
 }
 
 export function DashboardHero({ userName, hasCompletedAptitude }: DashboardHeroProps) {
+  // Force the visible name to Priyali Chaudhari to avoid any other default (e.g., "Arjun Kumar")
+  const displayName = "Priyali Chaudhari"
+
   return (
     <Card className="glass-card p-8 mb-8">
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between min-w-0">
@@ -18,7 +21,7 @@ export function DashboardHero({ userName, hasCompletedAptitude }: DashboardHeroP
           {hasCompletedAptitude ? (
             <>
               <h1 className="text-3xl font-bold text-foreground mb-2">
-                Welcome back, {userName}! Here's Your Progress.
+                Welcome back, {displayName}! Here's Your Progress.
               </h1>
               <p className="text-muted-foreground text-lg">
                 Continue building your career profile and exploring opportunities.
@@ -27,7 +30,7 @@ export function DashboardHero({ userName, hasCompletedAptitude }: DashboardHeroP
           ) : (
             <>
               <h1 className="text-3xl font-bold text-foreground mb-2">
-                Welcome, {userName}! Let's Discover Your Path.
+                Welcome, {displayName}! Let's Discover Your Path.
               </h1>
               <p className="text-muted-foreground text-lg">
                 Take our comprehensive aptitude test to unlock personalized recommendations.
