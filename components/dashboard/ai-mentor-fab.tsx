@@ -37,7 +37,7 @@ export function AIMentorFAB() {
     try {
       // ⚠️ Only for demo: key is exposed in client!
       const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyA66bj6PAp110ru-kJa7G7oSBUrGVojJyw`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=`,
         {
           method: "POST",
           headers: {
