@@ -21,12 +21,22 @@ export default function SettingsPage() {
   })
 
   const [profile, setProfile] = useState({
-    name: "Arjun Sharma",
-    email: "arjun.sharma@email.com",
-    phone: "+91 98765 43210",
+    name: "Priyali Chaudhari",
+    email: "priiyalichaudhari@gmail.com",
+    phone: "9099045613",
     location: "Srinagar, Jammu & Kashmir",
-    bio: "Aspiring software engineer passionate about AI and machine learning.",
+    bio: "Aspiring towards meaningful career choices and learning opportunities.",
+    profilePic: "/images/priyali-chaudhari.jpg", // place this file in public/images/
   })
+
+  const handleProfilePhotoChange = (file?: File | null) => {
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      setProfile((prev) => ({ ...prev, profilePic: (e.target?.result as string) || "" }))
+    }
+    reader.readAsDataURL(file)
+  }
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -76,13 +86,27 @@ export default function SettingsPage() {
                 <CardContent className="space-y-6">
                   <div className="flex items-center gap-6">
                     <Avatar className="w-20 h-20">
-                      <AvatarImage src="/placeholder.svg?height=80&width=80" />
-                      <AvatarFallback className="text-lg">AS</AvatarFallback>
+                      {profile.profilePic ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <AvatarImage src={profile.profilePic} alt="Profile" />
+                      ) : (
+                        <AvatarImage src="/placeholder.svg?height=80&width=80" />
+                      )}
+                      <AvatarFallback className="text-lg">PC</AvatarFallback>
                     </Avatar>
                     <div>
-                      <Button variant="outline" className="mb-2 bg-transparent">
-                        Change Photo
-                      </Button>
+                      <label htmlFor="profile-photo" className="mb-2 inline-block">
+                        <Button variant="outline" className="bg-transparent">
+                          Change Photo
+                        </Button>
+                      </label>
+                      <input
+                        id="profile-photo"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => handleProfilePhotoChange(e.target.files?.[0] ?? null)}
+                      />
                       <p className="text-sm text-muted-foreground">JPG, GIF or PNG. 1MB max.</p>
                     </div>
                   </div>
